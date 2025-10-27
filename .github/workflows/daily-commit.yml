@@ -2,13 +2,14 @@ name: Daily Commit Automation
 
 on:
   schedule:
-    # Runs every day at 06:00 UTC (you can change time later)
     - cron: "0 6 * * *"
-  workflow_dispatch: # allows manual runs too
+  workflow_dispatch:
 
 jobs:
   daily-update:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # ✅ allows pushing commits
 
     steps:
       - name: Checkout Repository
@@ -20,5 +21,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add daily_update_log.txt
-          git commit -m "Automated daily update $(date)"
+          git commit -m "Automated daily update $(date)" || echo "No changes to commit"
           git push
+
